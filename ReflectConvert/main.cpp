@@ -39,6 +39,7 @@ void test()
 {
 	// 不能这样操作，由于m_classInfo 是静态的，有什么办法？能够解决这个问题呢？
 	// 此外需要引入智能指针
+	// 如何创建带有参数的对象实例？其实也简单，但是要考虑很多的数据类型，加上自定义数据类型，可以采用模板的方式来实现。
 	Object* p = Object::CreateObject("A"); // 可以算作反射
 	A* ap = dynamic_cast<A*>(p);
 	ap->setId(1);
