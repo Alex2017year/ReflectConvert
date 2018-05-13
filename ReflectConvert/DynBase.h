@@ -1,11 +1,14 @@
 #pragma once
 #include <string>
+#include <vector>
 using namespace std;
 
 class Object;
 class ClassInfo;
 typedef Object* (*ObjectConstructorFn)(void);
 bool Register(ClassInfo *ci);
+std::vector<Object*> ResolveGroup(string className);
+void ReleaseAll();
 
 /*
 	这个类的作用是为了保存类的型和构造函数
@@ -14,7 +17,7 @@ class ClassInfo
 {
 public:
 	ClassInfo(const string className, ObjectConstructorFn ctor) :
-		m_className(className), m_objectConstructor(ctor) 
+		m_className(className), m_objectConstructor(ctor)
 	{
 		Register(this);
 	}
@@ -33,22 +36,23 @@ public:
 
 
 // 使用static 定义这个ClassInfo类的成员变量，会被所有类共享
-#define DECLARE_CLASS(name) \
-		protected: \
-			static ClassInfo ms_classInfo; \
-		public: \
-			virtual ClassInfo* GetClassInfo() const; \
-			static Object* CreateObject();
+#define DECLARE_CLASS(name)							\
+		protected:									\
+			static ClassInfo ms_classInfo;			\
+		public:										\
+			virtual ClassInfo* GetClassInfo() const;\
+			static Object* CreateObject();			\
 
-#define IMPLEMENT_CLASS_COMMON(name, func) \
-		ClassInfo name::ms_classInfo((#name), \
-				  (ObjectConstructorFn) func); \
-		ClassInfo* name::GetClassInfo() const \
-			{ return &name::ms_classInfo; }
+#define IMPLEMENT_CLASS_COMMON(name, func)		\
+		ClassInfo name::ms_classInfo((#name),	\
+				  (ObjectConstructorFn) func);	\
+		ClassInfo* name::GetClassInfo() const	\
+			{ return &name::ms_classInfo; }		\
 
-#define IMPLEMENT_CLASS(name) \
-	IMPLEMENT_CLASS_COMMON(name, name::CreateObject) \
-	Object* name::CreateObject() \
+// 在 CreateObject方法中添加相应的 multimap<string, ClassInfo*>
+#define IMPLEMENT_CLASS(name)						\
+	IMPLEMENT_CLASS_COMMON(name, name::CreateObject)\
+	Object* name::CreateObject()					\
 		{ return new name; }
 
 class Object
