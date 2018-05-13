@@ -1,4 +1,5 @@
 #include "DynBase.h"
+#include <iostream>
 #include <map>
 
 static std::map<string, ClassInfo*> *classInfoMap = NULL;
@@ -31,7 +32,8 @@ Object* Object::CreateObject(string name)
 	{
 		return iter->second->CreateObject();
 	}
-
+	
+	std::cout << "类型：" << name << " 没有被定义" << std::endl;
 	return NULL;
 }
 

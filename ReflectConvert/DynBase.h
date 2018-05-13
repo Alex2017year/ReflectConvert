@@ -32,6 +32,7 @@ public:
 };
 
 
+// 使用static 定义这个ClassInfo类的成员变量，会被所有类共享
 #define DECLARE_CLASS(name) \
 		protected: \
 			static ClassInfo ms_classInfo; \
