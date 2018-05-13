@@ -7,6 +7,9 @@ class ClassInfo;
 typedef Object* (*ObjectConstructorFn)(void);
 bool Register(ClassInfo *ci);
 
+/*
+	这个类的作用是为了保存类的型和构造函数
+*/
 class ClassInfo
 {
 public:
@@ -18,13 +21,14 @@ public:
 
 	virtual ~ClassInfo() {}
 
+	// 空的构造函数
 	Object* CreateObject() const { return m_objectConstructor ? (*m_objectConstructor)() : NULL; }
 	bool IsDynamic() const { return NULL != m_objectConstructor; }
 	const string GetClassName() const { return m_className; }
 	ObjectConstructorFn GetConstructor() const { return m_objectConstructor; }
 public:
-	string m_className;
-	ObjectConstructorFn m_objectConstructor;
+	string m_className;							// 类的名称
+	ObjectConstructorFn m_objectConstructor;	// 类的构造函数
 };
 
 
@@ -38,7 +42,7 @@ public:
 #define IMPLEMENT_CLASS_COMMON(name, func) \
 		ClassInfo name::ms_classInfo((#name), \
 				  (ObjectConstructorFn) func); \
-		ClassInfo *name::GetClassInfo() const \
+		ClassInfo* name::GetClassInfo() const \
 			{ return &name::ms_classInfo; }
 
 #define IMPLEMENT_CLASS(name) \
